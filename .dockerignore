@@ -1,0 +1,19 @@
+.git
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.db
+.ipynb_checkpoints
+X_train.npy
+X_val.npy
+X_test.npy
+y_train.npy
+y_val.npy
+y_test.npy
+# X_train.npy, etc. are large and only for training.
+# model.pkl is needed for inference in the app.
+# We actually WANT model.pkl in the image, so I will NOT ignore it, 
+# or I will specifically COPY it. 
+# Actually, it's better to keep it out of .dockerignore if we want it in the image.
