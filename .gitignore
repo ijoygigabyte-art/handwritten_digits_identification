@@ -1,9 +1,6 @@
 # Large data files — do not commit (regenerate with data_loader.py)
 *.npy
 
-# Trained model binary — too large for git
-model.pkl
-
 # Python cache
 __pycache__/
 *.pyc
