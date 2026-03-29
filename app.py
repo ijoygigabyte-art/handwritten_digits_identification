@@ -50,16 +50,19 @@ def predict(payload: ImagePayload):
     if bbox:
         img = img.crop(bbox)
         # Pad to square with margin
+        margin=40
         size = max(img.size)
-        padded = Image.new("L", (size, size), 0)
-        offset = ((size - img.size[0]) // 2, (size - img.size[1]) // 2)
+        padded_size = size+margin*2
+        padded = Image.new("L", (padded_size, padded_size), 0)
+        offset = ((padded_size - img.size[0]) // 2, (padded_size - img.size[1]) // 2)
         padded.paste(img, offset)
         img = padded
 
+    img = img.filter(ImageFilter.GaussianBlur(radius=2))
     img = img.resize((28, 28), Image.LANCZOS)
 
-    # Optional: slight blur to smooth pixelation from scaling
-    img = img.filter(ImageFilter.GaussianBlur(radius=0.5))
+    
+    
 
     
 
