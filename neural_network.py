@@ -86,3 +86,30 @@ def SGD(model, lr):
         if isinstance(layer, LinearLayer):
             layer.weights -= lr*layer.d_weights
             layer.bias -= lr*layer.d_bias
+
+class Adam:
+    """Adaptive Moment Estimation optimizer — adapts learning rate per weight."""
+    def __init__(self, layers, lr=0.001, beta1=0.9, beta2=0.999, eps=1e-8):
+        self.layers = [l for l in layers if isinstance(l, LinearLayer)]
+        self.lr = lr
+        self.beta1, self.beta2, self.eps = beta1, beta2, eps
+        self.t = 0
+        # First and second moment estimates for weights and biases
+        self.m = [{"w": np.zeros_like(l.weights), "b": np.zeros_like(l.bias)} for l in self.layers]
+        self.v = [{"w": np.zeros_like(l.weights), "b": np.zeros_like(l.bias)} for l in self.layers]
+
+    def step(self):
+        self.t += 1
+        for i, layer in enumerate(self.layers):
+            for key, grad in [("w", layer.d_weights), ("b", layer.d_bias)]:
+                # Update biased moment estimates
+                self.m[i][key] = self.beta1 * self.m[i][key] + (1 - self.beta1) * grad
+                self.v[i][key] = self.beta2 * self.v[i][key] + (1 - self.beta2) * grad**2
+                # Bias-corrected estimates
+                m_hat = self.m[i][key] / (1 - self.beta1**self.t)
+                v_hat = self.v[i][key] / (1 - self.beta2**self.t)
+                # Update parameters
+                if key == "w":
+                    layer.weights -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
+                else:
+                    layer.bias -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
